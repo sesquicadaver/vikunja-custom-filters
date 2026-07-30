@@ -89,8 +89,9 @@
 </template>
 
 <script setup lang="ts">
-import {computed, ref, watch, toRefs, nextTick, onMounted, onBeforeUnmount, onUnmounted} from 'vue'
+import {computed, ref, watch, toRefs, onUnmounted} from 'vue'
 import {useRouter} from 'vue-router'
+import {useElementSize} from '@vueuse/core'
 import dayjs from 'dayjs'
 import {useDayjsLanguageSync} from '@/i18n/useDayjsLanguageSync'
 
@@ -127,13 +128,12 @@ const emit = defineEmits<{
 }>()
 
 const DAY_WIDTH_PIXELS_MIN = 30
-const dayWidthPixels = ref(0)
-let resizeObserver: ResizeObserver
 
 const {tasks, filters} = toRefs(props)
 
 const dayjsLanguageLoading = useDayjsLanguageSync(dayjs)
-const ganttContainer = ref(null)
+const ganttContainer = ref<HTMLElement | null>(null)
+const {width: ganttContainerWidth} = useElementSize(ganttContainer)
 const ganttChartBodyRef = ref<InstanceType<typeof GanttChartBody> | null>(null)
 const router = useRouter()
 
@@ -158,11 +158,6 @@ let dragStopHandler: (() => void) | null = null
 const dateFromDate = computed(() => dayjs(filters.value.dateFrom).startOf('day').toDate())
 const dateToDate = computed(() => dayjs(filters.value.dateTo).endOf('day').toDate())
 
-const totalWidth = computed(() => {
-	const dateDiff = Math.ceil((dateToDate.value.valueOf() - dateFromDate.value.valueOf()) / MILLISECONDS_A_DAY)
-	return dateDiff * dayWidthPixels.value
-})
-
 const timelineData = computed(() => {
 	const dates: Date[] = []
 	const currentDate = new Date(dateFromDate.value)
@@ -174,6 +169,12 @@ const timelineData = computed(() => {
 	
 	return dates
 })
+const dayCount = computed(() => Math.max(1, timelineData.value.length))
+const dayWidthPixels = computed(() => Math.max(
+	ganttContainerWidth.value / dayCount.value,
+	DAY_WIDTH_PIXELS_MIN,
+))
+const totalWidth = computed(() => dayCount.value * dayWidthPixels.value)
 
 const ganttBars = ref<GanttBarModel[][]>([])
 const ganttRows = ref<string[]>([])
@@ -298,55 +299,6 @@ function transformTaskToGanttBar(node: GanttTaskTreeNode): GanttBarModel {
 		},
 	}
 }
-
-function updateDayWidthPixels() {
-	const node = ganttContainer.value
-	if (!node) return
-
-	const rect = node.getBoundingClientRect()
-	const styles = window.getComputedStyle(node)
-
-	const marginLeft = parseFloat(styles.marginLeft) || 0
-	const marginRight = parseFloat(styles.marginRight) || 0
-
-	// max width without overflow
-	const maxWidth = rect.width - marginLeft - marginRight
-
-	const dayCount = Math.ceil(
-		(dateToDate.value.valueOf() - dateFromDate.value.valueOf()) / MILLISECONDS_A_DAY,
-	)
-
-	dayWidthPixels.value = Math.max(
-		maxWidth / dayCount,
-		DAY_WIDTH_PIXELS_MIN,
-	)
-}
-
-onMounted(async () => {
-	await nextTick()
-	updateDayWidthPixels()
-
-	if (ganttContainer.value) {
-		resizeObserver = new ResizeObserver(updateDayWidthPixels)
-		resizeObserver.observe(ganttContainer.value)
-	}
-
-	window.addEventListener('resize', updateDayWidthPixels)
-})
-
-onBeforeUnmount(() => {
-	resizeObserver?.disconnect()
-	window.removeEventListener('resize', updateDayWidthPixels)
-})
-
-watch(
-	[dateFromDate, dateToDate],
-	async () => {
-		await nextTick()
-		updateDayWidthPixels()
-	},
-	{flush: 'post'},
-)
 
 // Build the task tree when tasks change
 watch(

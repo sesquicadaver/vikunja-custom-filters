@@ -44,6 +44,7 @@ test.describe('Project View Gantt', () => {
 	test('Shows tasks from the current and next month', async ({authenticatedPage: page}) => {
 		await ProjectFactory.create(1)
 		await ProjectViewFactory.create(1, {id: 2, project_id: 1, view_kind: 1})
+		await page.setViewportSize({width: 1280, height: 720})
 		const now = Date.UTC(2022, 8, 25)
 		await page.clock.install({time: new Date(now)})
 
@@ -51,10 +52,25 @@ test.describe('Project View Gantt', () => {
 		nextMonth.setDate(1)
 		nextMonth.setMonth(9)
 
-		await page.goto('/projects/1/2')
+		await page.goto('/projects/1/2?dateFrom=2022-09-25&dateTo=2022-10-01')
 
 		await expect(page.locator('.gantt-timeline-months')).toContainText(dayjs(now).format('MMMM YYYY'))
 		await expect(page.locator('.gantt-timeline-months')).toContainText(dayjs(nextMonth).format('MMMM YYYY'))
+		const sizing = await page.locator('.gantt-container').evaluate(
+			container => {
+				const days = [...container.querySelectorAll('.gantt-timeline-days .timeunit')]
+				return {
+					containerWidth: container.clientWidth,
+					dayCount: days.length,
+					dayWidth: days[0]?.getBoundingClientRect().width ?? 0,
+				}
+			},
+		)
+		expect(sizing.dayWidth).toBeCloseTo(sizing.containerWidth / sizing.dayCount, 1)
+		await expect(page.locator('.gantt-timeline-months .timeunit-month').first()).not.toHaveCSS('width', '0px')
+
+		await page.goto('/projects/1/2')
+		await expect(page.locator('.gantt-timeline-days .timeunit').first()).toHaveCSS('width', '30px')
 	})
 
 	test('Shows tasks with dates', async ({authenticatedPage: page}) => {
