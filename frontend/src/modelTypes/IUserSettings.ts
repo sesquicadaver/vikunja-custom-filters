@@ -9,6 +9,7 @@ import type {Priority} from '@/constants/priorities'
 import type {DateDisplay} from '@/constants/dateDisplay'
 import type {TimeFormat} from '@/constants/timeFormat'
 import type {IRelationKind} from '@/types/IRelationKind'
+import type {ProjectFilterStateMap} from '@/modelTypes/IUserProjectFilter'
 
 export interface IFrontendSettings {
 	playSoundWhenDone: boolean
@@ -16,6 +17,8 @@ export interface IFrontendSettings {
 	colorSchema: BasicColorSchema
 	allowIconChanges: boolean
 	filterIdUsedOnOverview: IProject['id'] | null
+	/** Last-used personal/ad-hoc filter per project (synced across devices). */
+	projectFilterState?: ProjectFilterStateMap
 	defaultView?: DefaultProjectViewKind
 	minimumPriority?: Priority
 	dateDisplay: DateDisplay

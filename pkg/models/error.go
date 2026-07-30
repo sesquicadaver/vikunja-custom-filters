@@ -1964,6 +1964,91 @@ func (err ErrSavedFilterNotAvailableForLinkShare) HTTPError() web.HTTPError {
 	}
 }
 
+// =====================
+// User Project Filters
+// =====================
+
+// ErrUserProjectFilterDoesNotExist represents an error where a personal project filter does not exist.
+type ErrUserProjectFilterDoesNotExist struct {
+	UserProjectFilterID int64
+}
+
+// IsErrUserProjectFilterDoesNotExist checks if an error is ErrUserProjectFilterDoesNotExist.
+func IsErrUserProjectFilterDoesNotExist(err error) bool {
+	_, ok := err.(ErrUserProjectFilterDoesNotExist)
+	return ok
+}
+
+func (err ErrUserProjectFilterDoesNotExist) Error() string {
+	return fmt.Sprintf("User project filter does not exist [UserProjectFilterID: %d]", err.UserProjectFilterID)
+}
+
+// ErrCodeUserProjectFilterDoesNotExist holds the unique world-error code of this error
+const ErrCodeUserProjectFilterDoesNotExist = 11003
+
+// HTTPError holds the http error description
+func (err ErrUserProjectFilterDoesNotExist) HTTPError() web.HTTPError {
+	return web.HTTPError{
+		HTTPCode: http.StatusNotFound,
+		Code:     ErrCodeUserProjectFilterDoesNotExist,
+		Message:  "This personal project filter does not exist.",
+	}
+}
+
+// ErrUserProjectFilterNotAvailableForLinkShare represents an error where personal filters are used via a link share.
+type ErrUserProjectFilterNotAvailableForLinkShare struct {
+	LinkShareID int64
+}
+
+// IsErrUserProjectFilterNotAvailableForLinkShare checks if an error is ErrUserProjectFilterNotAvailableForLinkShare.
+func IsErrUserProjectFilterNotAvailableForLinkShare(err error) bool {
+	_, ok := err.(ErrUserProjectFilterNotAvailableForLinkShare)
+	return ok
+}
+
+func (err ErrUserProjectFilterNotAvailableForLinkShare) Error() string {
+	return fmt.Sprintf("Personal project filters are not available for link shares [LinkShareID: %d]", err.LinkShareID)
+}
+
+// ErrCodeUserProjectFilterNotAvailableForLinkShare holds the unique world-error code of this error
+const ErrCodeUserProjectFilterNotAvailableForLinkShare = 11004
+
+// HTTPError holds the http error description
+func (err ErrUserProjectFilterNotAvailableForLinkShare) HTTPError() web.HTTPError {
+	return web.HTTPError{
+		HTTPCode: http.StatusPreconditionFailed,
+		Code:     ErrCodeUserProjectFilterNotAvailableForLinkShare,
+		Message:  "Personal project filters are not available for link shares.",
+	}
+}
+
+// ErrUserProjectFilterInvalidProject represents an error where a personal filter targets an invalid project.
+type ErrUserProjectFilterInvalidProject struct {
+	ProjectID int64
+}
+
+// IsErrUserProjectFilterInvalidProject checks if an error is ErrUserProjectFilterInvalidProject.
+func IsErrUserProjectFilterInvalidProject(err error) bool {
+	_, ok := err.(ErrUserProjectFilterInvalidProject)
+	return ok
+}
+
+func (err ErrUserProjectFilterInvalidProject) Error() string {
+	return fmt.Sprintf("Personal project filters require a real project [ProjectID: %d]", err.ProjectID)
+}
+
+// ErrCodeUserProjectFilterInvalidProject holds the unique world-error code of this error
+const ErrCodeUserProjectFilterInvalidProject = 11005
+
+// HTTPError holds the http error description
+func (err ErrUserProjectFilterInvalidProject) HTTPError() web.HTTPError {
+	return web.HTTPError{
+		HTTPCode: http.StatusBadRequest,
+		Code:     ErrCodeUserProjectFilterInvalidProject,
+		Message:  "Personal project filters can only be created for real projects.",
+	}
+}
+
 // =============
 // Subscriptions
 // =============

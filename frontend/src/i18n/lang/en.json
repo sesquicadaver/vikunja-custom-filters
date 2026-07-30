@@ -586,6 +586,23 @@
       "descriptionPlaceholder": "Add a description for this filter here, hit '/' for more options…",
       "includeNulls": "Include Tasks which don't have a value set"
     },
+    "personal": {
+      "barLabel": "Personal filters",
+      "save": "Save current filter",
+      "saveTitle": "Save personal filter",
+      "saveDescription": "Save this filter for quick access inside this project. It stays private to you and syncs across your devices.",
+      "titlePlaceholder": "e.g. Open high priority",
+      "pin": "Pin for quick access",
+      "unpin": "Unpin",
+      "actions": "Personal filter actions",
+      "updateFromCurrent": "Update from current filter",
+      "rename": "Rename",
+      "delete": "Delete",
+      "deleteConfirm": "Delete personal filter \"{title}\"?",
+      "saveSuccess": "Personal filter saved.",
+      "updateSuccess": "Personal filter updated.",
+      "deleteSuccess": "Personal filter deleted."
+    },
     "create": {
       "title": "New Saved Filter",
       "description": "A saved filter is a virtual project which is computed from a set of filters each time it is accessed.",

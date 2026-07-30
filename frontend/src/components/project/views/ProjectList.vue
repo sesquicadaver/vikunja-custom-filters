@@ -10,6 +10,12 @@
 				<SortPopup
 					v-model="sortByParam"
 				/>
+				<PersonalFilterBar
+					v-if="!isSavedFilter(project)"
+					v-model="params"
+					:project-id="projectId"
+					@update:modelValue="loadTasks()"
+				/>
 				<FilterPopup
 					v-if="!isSavedFilter(project)"
 					v-model="params"
@@ -109,6 +115,7 @@ import ButtonLink from '@/components/misc/ButtonLink.vue'
 import AddTask from '@/components/tasks/AddTask.vue'
 import SingleTaskInProject from '@/components/tasks/partials/SingleTaskInProject.vue'
 import FilterPopup from '@/components/project/partials/FilterPopup.vue'
+import PersonalFilterBar from '@/components/project/partials/PersonalFilterBar.vue'
 import Nothing from '@/components/misc/Nothing.vue'
 import Pagination from '@/components/misc/Pagination.vue'
 import SortPopup from '@/components/project/partials/SortPopup.vue'

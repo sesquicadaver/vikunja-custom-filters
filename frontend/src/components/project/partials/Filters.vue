@@ -46,6 +46,15 @@
 				{{ $t('filters.clear') }}
 			</XButton>
 			<XButton
+				v-if="canSavePersonal"
+				variant="secondary"
+				class="mie-2"
+				:disabled="filterQuery === ''"
+				@click.prevent.stop="emitSavePersonal"
+			>
+				{{ $t('filters.personal.save') }}
+			</XButton>
+			<XButton
 				variant="primary"
 				@click.prevent.stop="changeAndEmitButton"
 			>
@@ -76,18 +85,21 @@ const props = withDefaults(defineProps<{
 	changeImmediately?: boolean,
 	filterFromView?: string,
 	showClose?: boolean,
+	canSavePersonal?: boolean,
 }>(), {
 	hasTitle: false,
 	hasFooter: true,
 	changeImmediately: false,
 	filterFromView: undefined,
 	showClose: false,
+	canSavePersonal: false,
 })
 
 const emit = defineEmits<{
 	'update:modelValue': [value: TaskFilterParams],
 	'showResults': [],
 	'close': [],
+	'savePersonal': [],
 }>()
 
 const route = useRoute()
@@ -187,6 +199,11 @@ function changeAndEmitButton() {
 function clearFiltersAndEmit() {
 	filterQuery.value = ''
 	changeAndEmitButton()
+}
+
+function emitSavePersonal() {
+	change('always')
+	emit('savePersonal')
 }
 
 function focusFilterInput() {

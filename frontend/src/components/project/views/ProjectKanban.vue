@@ -7,6 +7,12 @@
 	>
 		<template #header>
 			<div class="filter-container">
+				<PersonalFilterBar
+					v-if="!isSavedFilter(project)"
+					v-model="params"
+					:project-id="projectId"
+					@update:modelValue="updateFilters"
+				/>
 				<FilterPopup
 					v-if="!isSavedFilter(project)"
 					v-model="params"
@@ -311,6 +317,7 @@ import {useAuthStore} from '@/stores/auth'
 
 import ProjectWrapper from '@/components/project/ProjectWrapper.vue'
 import FilterPopup from '@/components/project/partials/FilterPopup.vue'
+import PersonalFilterBar from '@/components/project/partials/PersonalFilterBar.vue'
 import KanbanCard from '@/components/tasks/partials/KanbanCard.vue'
 import Dropdown from '@/components/misc/Dropdown.vue'
 import DropdownItem from '@/components/misc/DropdownItem.vue'
@@ -922,6 +929,13 @@ function unCollapseBucket(bucket: IBucket) {
 
 	--loader-border-color: var(--grey-500);
   }
+}
+
+.filter-container {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: .5rem;
 }
 </style>
 

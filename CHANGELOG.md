@@ -7,6 +7,12 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 All releases can be found on https://code.vikunja.io/vikunja/releases.
 
+## [Unreleased]
+
+### Features
+
+* *(filters)* Personal project filters: save/pin/switch presets inside a project without creating Saved Filter pseudo-projects; last-used filter restored via `frontend_settings.projectFilterState` across devices (`/api/v2/projects/{project}/user-filters`)
+
 ## [2.4.0] - 2026-07-19
 
 ### Bug Fixes

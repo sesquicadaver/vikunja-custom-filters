@@ -74,6 +74,12 @@
 						</Card>
 					</template>
 				</Popup>
+				<PersonalFilterBar
+					v-if="!isSavedFilter({id: projectId})"
+					v-model="params"
+					:project-id="projectId"
+					@update:modelValue="taskList.loadTasks()"
+				/>
 				<FilterPopup
 					v-if="!isSavedFilter({id: projectId})"
 					v-model="params"
@@ -358,6 +364,7 @@ import CommentCount from '@/components/tasks/partials/CommentCount.vue'
 import FancyCheckbox from '@/components/input/FancyCheckbox.vue'
 import Sort from '@/components/tasks/partials/Sort.vue'
 import FilterPopup from '@/components/project/partials/FilterPopup.vue'
+import PersonalFilterBar from '@/components/project/partials/PersonalFilterBar.vue'
 import Pagination from '@/components/misc/Pagination.vue'
 import Popup from '@/components/misc/Popup.vue'
 
@@ -518,7 +525,14 @@ const taskDetailRoutes = computed(() => Object.fromEntries(
 	box-shadow: none;
 }
 
-.filter-container :deep(.popup) {
-	inset-block-start: 7rem;
+.filter-container {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: .5rem;
+
+	:deep(.popup) {
+		inset-block-start: 7rem;
+	}
 }
 </style>
